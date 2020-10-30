@@ -2,7 +2,6 @@
 let express = require('express');
 let router = express.Router();
 let mongoose = require('mongoose');
-const books = require('../models/books');
 
 // define the book model
 let book = require('../models/books');
@@ -117,7 +116,7 @@ router.get('/delete/:id', (req, res, next) => {
   let bookID = req.params.id;
 
   // removes selected book from database
-  books.remove({_id: bookID}, (err)=>{
+  book.remove({_id: bookID}, (err)=>{
     if(err){
       console.log(err);
       res.end(err);
