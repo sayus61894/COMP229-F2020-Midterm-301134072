@@ -27,15 +27,18 @@ router.get('/', (req, res, next) => {
 
 //  GET the Book Details page in order to add a new Book
 router.get('/add', (req, res, next) => {
+
   res.render('books/details', {
     title: 'Add Book',
     books: ''
    });
+
 });
 
 // POST process the Book Details page and create a new Book - CREATE
 router.post('/add', (req, res, next) => {
 
+  // creating new instance of book
   let newBook = new book({
       "Title": req.body.title,
       "Price": req.body.price,
@@ -43,6 +46,7 @@ router.post('/add', (req, res, next) => {
       "Genre": req.body.genre
   });
 
+  // add new book to database
   book.create(newBook,(err,books)=>{
       if(err){
         console.log(err);
@@ -52,12 +56,25 @@ router.post('/add', (req, res, next) => {
       }
   });
 
+  // Testing save() method
+  /*
+  newBook.save((err, newBook)=>{
+    if(err){
+      console.log(err);
+    }else{
+      res.redirect('/books');
+    }
+  });
+  */
+
 });
 
 // GET the Book Details page in order to edit an existing Book
 router.get('/:id', (req, res, next) => {
+
   let bookID = req.params.id;
 
+  // passing selected book to edit page
   book.findById(bookID, (err, foundBook)=>{
     if(err){
       console.log(err);
@@ -70,36 +87,58 @@ router.get('/:id', (req, res, next) => {
 
 // POST - process the information passed from the details form and update the document
 router.post('/:id', (req, res, next) => {
+
   let bookID = req.params.id;
 
-    /*****************
-     * ADD CODE HERE *
-     *****************/
-    let updatedBook = new book({
-      "_id": bookID,
-      "Title": req.body.title,
-      "Price": req.body.price,
-      "Author": req.body.author,
-      "Genre": req.body.genre
-    })
+  // creates instance of book and fills out properties from form
+  let updatedBook = new book({
+    "_id": bookID,
+    "Title": req.body.title,
+    "Price": req.body.price,
+    "Author": req.body.author,
+    "Genre": req.body.genre
+  });
 
-    book.updateOne({_id: bookID}, updatedBook, (err)=>{
-      if(err){
-        console.log(err);
-        res.end(err);
-      }else{
-        res.redirect('/books');
-      }
-    });
+  // updating database with information
+  book.updateOne({_id: bookID}, updatedBook, (err)=>{
+    if(err){
+      console.log(err);
+      res.end(err);
+    }else{
+      res.redirect('/books');
+    };
+  });
 
 });
 
 // GET - process the delete by user id
 router.get('/delete/:id', (req, res, next) => {
 
-    /*****************
-     * ADD CODE HERE *
-     *****************/
+  let bookID = req.params.id;
+
+  // removes selected book from database
+  books.remove({_id: bookID}, (err)=>{
+    if(err){
+      console.log(err);
+      res.end(err);
+    }else{
+      res.redirect('/books');
+    }
+  });
+
+  // Testing deleteOne() function from mongoose API
+  /*
+  books.deleteOne({_id: bookID}, (err)=>{
+    if(err){
+      console.log(err);
+      res.end(err);
+    }else{
+      res.redirect('/books');
+    }
+  });
+  */
+  
+
 });
 
 
