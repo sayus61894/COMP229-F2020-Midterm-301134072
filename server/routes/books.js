@@ -70,10 +70,27 @@ router.get('/:id', (req, res, next) => {
 
 // POST - process the information passed from the details form and update the document
 router.post('/:id', (req, res, next) => {
+  let bookID = req.params.id;
 
     /*****************
      * ADD CODE HERE *
      *****************/
+    let updatedBook = new book({
+      "_id": bookID,
+      "Title": req.body.title,
+      "Price": req.body.price,
+      "Author": req.body.author,
+      "Genre": req.body.genre
+    })
+
+    book.updateOne({_id: bookID}, updatedBook, (err)=>{
+      if(err){
+        console.log(err);
+        res.end(err);
+      }else{
+        res.redirect('/books');
+      }
+    });
 
 });
 
